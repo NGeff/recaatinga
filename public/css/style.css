@@ -212,16 +212,17 @@ nav ul li a.active {
 }
 
 main {
-    max-width: 1200px;
-    margin: 0 auto;
     width: 100%;
 }
 
 .sessoes {
     width: 100%;
+    max-width: 100%;
 }
 
 .sessoes section {
+    width: 100%;
+    max-width: 100%;
     min-height: 70vh;
     padding: 5rem 2rem;
     display: flex;
@@ -231,6 +232,7 @@ main {
     text-align: center;
     animation: fadeInUp 0.8s ease;
     position: relative;
+    box-sizing: border-box;
 }
 
 .sessoes section::before {
@@ -270,9 +272,11 @@ main {
 
 .sessoes section p {
     max-width: 800px;
+    width: 100%;
     font-size: 1.1rem;
     line-height: 1.9;
     text-align: justify;
+    margin: 0 auto;
 }
 
 .sessoes section img {
