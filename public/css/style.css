@@ -20,12 +20,21 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: var(--fonte-principal);
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     line-height: 1.6;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 html {
@@ -36,6 +45,10 @@ a {
     color: var(--cor-branco);
     text-decoration: none;
     transition: var(--transicao-padrao);
+}
+
+main {
+    flex: 1;
 }
 
 @keyframes fadeInUp {
@@ -201,6 +214,11 @@ nav ul li a.active {
 main {
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+}
+
+.sessoes {
+    width: 100%;
 }
 
 .sessoes section {
@@ -351,6 +369,7 @@ footer {
     padding: 3rem 2rem;
     text-align: center;
     position: relative;
+    margin-top: auto;
 }
 
 footer h4 {

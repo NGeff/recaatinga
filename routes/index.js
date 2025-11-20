@@ -108,7 +108,6 @@ router.get('/dashboard', protect, async (req, res) => {
     }
 });
 
-// Listagem de jogos
 router.get('/games', protect, async (req, res) => {
     try {
         const games = await Game.find({ active: true }).sort({ createdAt: -1 });
@@ -119,7 +118,6 @@ router.get('/games', protect, async (req, res) => {
     }
 });
 
-// Jogar um jogo específico
 router.get('/games/:slug', protect, async (req, res) => {
     try {
         const game = await Game.findOne({ slug: req.params.slug, active: true });
@@ -144,7 +142,6 @@ router.get('/games/:slug', protect, async (req, res) => {
     }
 });
 
-// Salvar progresso do jogo
 router.post('/api/games/:gameId/progress', protect, async (req, res) => {
     try {
         const { levelId, score } = req.body;
@@ -254,6 +251,42 @@ router.patch('/admin/users/:id/toggle', protect, isAdmin, async (req, res) => {
     }
 });
 
+router.patch('/admin/users/:id/points', protect, isAdmin, async (req, res) => {
+    try {
+        const { points } = req.body;
+        const user = await User.findById(req.params.id);
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+        }
+        
+        user.totalPoints = points;
+        await user.save();
+        
+        res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Erro ao atualizar pontos' });
+    }
+});
+
+router.patch('/admin/users/:id/role', protect, isAdmin, async (req, res) => {
+    try {
+        const { role } = req.body;
+        const user = await User.findById(req.params.id);
+        
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuário não encontrado' });
+        }
+        
+        user.role = role;
+        await user.save();
+        
+        res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Erro ao atualizar papel do usuário' });
+    }
+});
+
 router.delete('/admin/users/:id', protect, isAdmin, async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id);
@@ -263,7 +296,6 @@ router.delete('/admin/users/:id', protect, isAdmin, async (req, res) => {
     }
 });
 
-// CRUD de Jogos
 router.post('/admin/games', protect, isAdmin, async (req, res) => {
     try {
         const game = await Game.create(req.body);
@@ -320,7 +352,6 @@ router.delete('/admin/games/:id', protect, isAdmin, async (req, res) => {
     }
 });
 
-// CRUD de Fases (Levels)
 router.post('/admin/games/:gameId/levels', protect, isAdmin, async (req, res) => {
     try {
         const game = await Game.findById(req.params.gameId);
@@ -374,7 +405,6 @@ router.delete('/admin/games/:gameId/levels/:levelId', protect, isAdmin, async (r
     }
 });
 
-// Autenticação
 router.post('/api/auth/register', [
     body('name').trim().isLength({ min: 3 }).withMessage('Nome deve ter no mínimo 3 caracteres'),
     body('email').isEmail().normalizeEmail().withMessage('E-mail inválido'),
@@ -492,6 +522,78 @@ router.post('/api/auth/logout', (req, res) => {
         }
         res.status(200).json({ success: true, message: 'Logout realizado com sucesso' });
     });
+});
+
+router.post('/api/user/change-password', protect, [
+    body('currentPassword').notEmpty().withMessage('Senha atual é obrigatória'),
+    body('newPassword').isLength({ min: 6 }).withMessage('Nova senha deve ter no mínimo 6 caracteres')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ 
+            success: false, 
+            message: errors.array()[0].msg 
+        });
+    }
+
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.user._id);
+
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Senha atual incorreta' 
+            });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.json({ 
+            success: true, 
+            message: 'Senha alterada com sucesso!' 
+        });
+    } catch (error) {
+        console.error('Erro ao alterar senha:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao alterar senha' 
+        });
+    }
+});
+
+router.delete('/api/user/delete-account', protect, async (req, res) => {
+    try {
+        const { password } = req.body;
+        const user = await User.findById(req.user._id);
+
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Senha incorreta' 
+            });
+        }
+
+        await Progress.deleteMany({ userId: user._id });
+        await User.findByIdAndDelete(user._id);
+
+        res.clearCookie('token');
+        req.session.destroy();
+
+        res.json({ 
+            success: true, 
+            message: 'Conta excluída com sucesso' 
+        });
+    } catch (error) {
+        console.error('Erro ao excluir conta:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao excluir conta' 
+        });
+    }
 });
 
 module.exports = router;

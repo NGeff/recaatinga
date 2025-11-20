@@ -64,8 +64,13 @@ async function loadUsers() {
                         <span class="status-badge ${user.active ? 'status-active' : 'status-inactive'}">
                             ${user.active ? 'Ativo' : 'Inativo'}
                         </span>
+                        ${user.role === 'admin' ? '<span class="status-badge" style="background: rgba(21,101,192,0.2); color: #1565c0; margin-left: 5px;">Admin</span>' : ''}
                     </td>
                     <td>
+                        <button class="action-btn btn-edit" onclick="editUserPoints('${user._id}', ${user.totalPoints})">Pontos</button>
+                        <button class="action-btn" style="background: #1976d2; color: white;" onclick="toggleUserRole('${user._id}', '${user.role}')">
+                            ${user.role === 'admin' ? 'Remover Admin' : 'Tornar Admin'}
+                        </button>
                         <button class="action-btn btn-toggle" onclick="toggleUser('${user._id}')">
                             ${user.active ? 'Desativar' : 'Ativar'}
                         </button>
@@ -76,6 +81,65 @@ async function loadUsers() {
         }
     } catch (error) {
         console.error('Erro ao carregar usuários:', error);
+    }
+}
+
+async function editUserPoints(userId, currentPoints) {
+    const newPoints = prompt(`Digite a nova pontuação (atual: ${currentPoints}):`, currentPoints);
+    
+    if (newPoints === null) return;
+    
+    const points = parseInt(newPoints);
+    if (isNaN(points) || points < 0) {
+        alert('Pontuação inválida!');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/users/${userId}/points`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ points })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Pontuação atualizada com sucesso!');
+            loadUsers();
+        } else {
+            alert(data.message || 'Erro ao atualizar pontuação');
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar pontos:', error);
+        alert('Erro ao atualizar pontos');
+    }
+}
+
+async function toggleUserRole(userId, currentRole) {
+    const newRole = currentRole === 'admin' ? 'user' : 'admin';
+    const action = newRole === 'admin' ? 'conceder acesso administrativo a' : 'remover acesso administrativo de';
+    
+    if (!confirm(`Deseja ${action} este usuário?`)) return;
+    
+    try {
+        const response = await fetch(`/admin/users/${userId}/role`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role: newRole })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Papel do usuário atualizado com sucesso!');
+            loadUsers();
+        } else {
+            alert(data.message || 'Erro ao atualizar papel');
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar papel:', error);
+        alert('Erro ao atualizar papel do usuário');
     }
 }
 

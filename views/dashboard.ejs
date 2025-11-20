@@ -6,6 +6,126 @@
     <title><%= title || 'ReCaatinga' %></title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" href="/img/logo_head.png" />
+    <style>
+        .settings-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+        .settings-title {
+            color: var(--cor-primaria);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .settings-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .setting-card {
+            background: var(--cor-fundo);
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .setting-info h4 {
+            color: var(--cor-secundaria);
+            margin-bottom: 0.5rem;
+        }
+        .setting-info p {
+            color: var(--cor-texto);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .btn-danger {
+            padding: 0.7rem 1.5rem;
+            background: var(--cor-erro);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transicao-padrao);
+        }
+        .btn-danger:hover {
+            background: #b71c1c;
+            transform: translateY(-2px);
+        }
+        .btn-warning {
+            padding: 0.7rem 1.5rem;
+            background: #f57c00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transicao-padrao);
+        }
+        .btn-warning:hover {
+            background: #e65100;
+            transform: translateY(-2px);
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeInUp 0.4s ease;
+        }
+        .modal-box h3 {
+            color: var(--cor-primaria);
+            margin-bottom: 1.5rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-cancel {
+            flex: 1;
+            padding: 0.8rem;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+            border: 2px solid var(--cor-texto);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-confirm {
+            flex: 1;
+            padding: 0.8rem;
+            background: var(--cor-erro);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -18,7 +138,7 @@
                 <li><a href="/#preservacao">Preservação</a></li>
                 <li><a href="/#sobre">Sobre</a></li>
                 <li><a href="/games">Jogos</a></li>
-                <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+                <li><a href="/dashboard" class="active">Dashboard</a></li>
             </ul>
         </nav>
         <% if (user) { %>
@@ -29,7 +149,7 @@
         <% } %>
     </header>
 
-    <main style="min-height: 80vh; padding: 4rem 2rem;">
+    <main style="padding: 4rem 2rem;">
         <div style="max-width: 900px; margin: 0 auto;">
             <div style="text-align: center; margin-bottom: 3rem;">
                 <h1 style="color: var(--cor-primaria); font-size: 2.5rem; margin-bottom: 1rem;">
@@ -38,7 +158,7 @@
                 <% if (user.role === 'admin') { %>
                 <div style="margin-top: 1.5rem;">
                     <a href="/admin" style="display: inline-block; padding: 1rem 2rem; background: linear-gradient(135deg, #1565c0, #1976d2); color: white; border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(21,101,192,0.3);">
-                        🛡️ Painel Administrativo
+                        Painel Administrativo
                     </a>
                 </div>
                 <% } %>
@@ -65,7 +185,7 @@
                         <p style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
                             <strong>Tipo de conta:</strong> 
                             <span style="padding: 0.3rem 1rem; background: <%= user.role === 'admin' ? 'linear-gradient(135deg, #1565c0, #1976d2)' : 'linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria))' %>; color: white; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
-                                <%= user.role === 'admin' ? '🛡️ Administrador' : '👤 Usuário' %>
+                                <%= user.role === 'admin' ? 'Administrador' : 'Usuário' %>
                             </span>
                         </p>
                     </div>
@@ -94,25 +214,88 @@
 
                 <% if (!user.role || user.role === 'user') { %>
                 <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, rgba(21,101,192,0.1), rgba(25,118,210,0.1)); border-radius: 15px; text-align: center; border: 2px solid rgba(21,101,192,0.2);">
-                    <h4 style="color: #1565c0; margin-bottom: 1rem;">💼 Quer se tornar administrador?</h4>
+                    <h4 style="color: #1565c0; margin-bottom: 1rem;">Quer se tornar administrador?</h4>
                     <p style="margin-bottom: 1.5rem; color: var(--cor-texto);">Se você possui um token de acesso administrativo, clique no botão abaixo</p>
                     <a href="/admin/access" style="display: inline-block; padding: 0.8rem 2rem; background: #1565c0; color: white; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
                         Solicitar Acesso Admin
                     </a>
                 </div>
                 <% } %>
+            </div>
 
-                <div style="margin-top: 3rem; text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="/games" style="display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-secundaria) 100%); color: white; border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(45,80,22,0.3);">
-                        🎮 Jogar Agora
-                    </a>
-                    <a href="/" style="display: inline-block; padding: 1rem 2.5rem; background: white; color: var(--cor-primaria); border: 2px solid var(--cor-primaria); border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
-                        🏠 Voltar ao Site
-                    </a>
+            <div class="settings-section">
+                <h3 class="settings-title">Configurações da Conta</h3>
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <div class="setting-info">
+                            <h4>Alterar Senha</h4>
+                            <p>Mantenha sua conta segura alterando sua senha regularmente</p>
+                        </div>
+                        <button class="btn-warning" onclick="openPasswordModal()">Alterar Senha</button>
+                    </div>
+                    <div class="setting-card">
+                        <div class="setting-info">
+                            <h4>Excluir Conta</h4>
+                            <p>Remova permanentemente sua conta e todos os dados associados</p>
+                        </div>
+                        <button class="btn-danger" onclick="openDeleteModal()">Excluir Conta</button>
+                    </div>
                 </div>
+            </div>
+
+            <div style="margin-top: 3rem; text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/games" style="display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-secundaria) 100%); color: white; border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(45,80,22,0.3);">
+                    🎮 Jogar Agora
+                </a>
+                <a href="/" style="display: inline-block; padding: 1rem 2.5rem; background: white; color: var(--cor-primaria); border: 2px solid var(--cor-primaria); border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
+                    Voltar ao Site
+                </a>
             </div>
         </div>
     </main>
+
+    <div id="passwordModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Alterar Senha</h3>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label>Senha Atual</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Nova Senha</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Nova Senha</label>
+                    <input type="password" id="confirmPassword" required minlength="6">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closePasswordModal()">Cancelar</button>
+                    <button type="submit" class="btn-confirm" style="background: var(--cor-primaria);">Alterar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3>🗑️ Excluir Conta</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--cor-texto);">
+                <strong>Atenção:</strong> Esta ação é irreversível. Todos os seus dados, progresso e conquistas serão permanentemente removidos.
+            </p>
+            <form id="deleteForm">
+                <div class="form-group">
+                    <label>Digite sua senha para confirmar</label>
+                    <input type="password" id="deletePassword" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+                    <button type="submit" class="btn-confirm">Excluir Conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <footer>
         <h4>Contato</h4>
@@ -130,5 +313,93 @@
     </footer>
 
     <script src="/js/app.js"></script>
+    <script>
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+            document.getElementById('passwordForm').reset();
+        }
+
+        function openDeleteModal() {
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            document.getElementById('deleteForm').reset();
+        }
+
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('As novas senhas não coincidem!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/user/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Senha alterada com sucesso!');
+                    closePasswordModal();
+                } else {
+                    alert(data.message || 'Erro ao alterar senha');
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor');
+            }
+        });
+
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!confirm('Tem certeza absoluta? Esta ação NÃO PODE ser desfeita!')) {
+                return;
+            }
+            
+            const password = document.getElementById('deletePassword').value;
+            
+            try {
+                const response = await fetch('/api/user/delete-account', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Conta excluída com sucesso. Você será redirecionado.');
+                    window.location.href = '/';
+                } else {
+                    alert(data.message || 'Erro ao excluir conta');
+                }
+            } catch (error) {
+                alert('Erro ao conectar com o servidor');
+            }
+        });
+
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
