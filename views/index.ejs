@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <header>
+        <a href="/"><img src="/img/logo_head.png" alt="Logo Recaatinga" id="logo_recaatinga"></a>
+        <nav>
+            <ul>
+                <li><a href="/#inicio">Início</a></li>
+                <li><a href="/#fauna">Fauna</a></li>
+                <li><a href="/#flora">Flora</a></li>
+                <li><a href="/#preservacao">Preservação</a></li>
+                <li><a href="/#sobre">Sobre</a></li>
+                <% if (user) { %>
+                    <li><a href="/games">Jogos</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                <% } %>
+            </ul>
+        </nav>
+        <% if (user) { %>
+        <div class="user-info-header">
+            <span>Olá, <strong><%= user.name %></strong></span>
+            <button class="btn-logout-header" onclick="logout()">Sair</button>
+        </div>
+        <% } %>
+    </header>
+
+    <main class="sessoes">
+        <section id="inicio" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">🌿 ReCaatinga</h1>
+                <p class="hero-slogan">
+                    <span class="slogan-line">Mais árvores, mais vida.</span><br>
+                    <span class="slogan-line">Mais animais, mais equilíbrio.</span><br>
+                    <span class="slogan-line">Com a natureza preservada, o futuro é sustentável e possível para todos.</span>
+                </p>
+                <div class="hero-cta">
+                    <% if (user) { %>
+                        <button class="btn_btn-primary">
+                            <a href="/games">🎮 Jogar Agora</a>
+                        </button>
+                    <% } else { %>
+                        <button class="btn_btn-primary">
+                            <a href="/login">🚀 Começar Agora</a>
+                        </button>
+                    <% } %>
+                    <button class="btn_btn-secondary">
+                        <a href="#sobre">📖 Conhecer Projeto</a>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="fauna">
+            <h2>🦎 Fauna da Caatinga</h2>
+            <p>A Caatinga abriga uma fauna diversificada e adaptada às condições semiáridas. Entre os animais encontrados estão a ararinha-azul, o tatu-bola, o veado-catingueiro, além de diversas espécies de répteis e invertebrados únicos desta região.</p>
+        </section>
+
+        <section id="flora">
+            <h2>🌵 Flora da Caatinga</h2>
+            <p>A vegetação da Caatinga é caracterizada por plantas xerófitas, adaptadas à seca. Destacam-se espécies como o mandacaru, a jurema, o umbuzeiro e a aroeira, que desenvolveram estratégias incríveis de sobrevivência em condições de baixa pluviosidade.</p>
+        </section>
+
+        <section id="preservacao">
+            <h2>🌍 Preservação Ambiental</h2>
+            <p>A Caatinga enfrenta desafios como desertificação, desmatamento e perda de biodiversidade. É fundamental conscientizar sobre a importância da preservação deste bioma para as futuras gerações e para o equilíbrio ambiental do Nordeste brasileiro.</p>
+        </section>
+
+        <section id="sobre">
+            <h2>ℹ️ Sobre o Projeto</h2>
+            <p>O Recaatinga é uma iniciativa de educação ambiental que visa promover o conhecimento e a preservação do bioma Caatinga através da pesquisa e divulgação científica. Nosso objetivo é sensibilizar e engajar pessoas de todas as idades na conservação deste ecossistema único.</p>
+            <img src="/img/Stone Capylin.PNG" alt="Capivara de pedra" style="max-width: 500px; border-radius: 20px; margin-top: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+        </section>
+    </main>
+
+    <footer>
+        <h4>Contato</h4>
+        <ul>
+            <li>
+                <img id="icons_footer" src="/img/instagram-32.png" alt="Instagram">
+                <a href="https://www.instagram.com/vivaacaatinga.pibicjr/" target="_blank">@vivaacaatinga.pibicjr</a>
+            </li>
+            <li>
+                <img id="icons_footer" src="/img/whatsapp-50.png" alt="WhatsApp">
+                <span>(82) 9 xxxx-xxxx</span>
+            </li>
+        </ul>
+        <p class="copyright">&copy; 2024 Recaatinga - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

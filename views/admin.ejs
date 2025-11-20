@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'Admin - ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>ReCaatinga Admin</h2>
+            </div>
+            <nav class="admin-nav">
+                <a href="#dashboard" class="admin-nav-item active" data-section="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="#users" class="admin-nav-item" data-section="users">
+                    <span class="icon">👥</span> Usuários
+                </a>
+                <a href="#games" class="admin-nav-item" data-section="games">
+                    <span class="icon">🎮</span> Jogos
+                </a>
+                <a href="#levels" class="admin-nav-item" data-section="levels">
+                    <span class="icon">🎯</span> Fases
+                </a>
+                <a href="/" class="admin-nav-item" style="margin-top: auto;">
+                    <span class="icon">🏠</span> Voltar ao Site
+                </a>
+            </nav>
+        </aside>
+
+        <main class="admin-content">
+            <header class="admin-header">
+                <h1 id="sectionTitle">Dashboard</h1>
+                <div class="admin-user-info">
+                    <span>Admin: <strong><%= user.name %></strong></span>
+                    <button class="btn-logout" onclick="logout()">Sair</button>
+                </div>
+            </header>
+
+            <section id="dashboard-section" class="admin-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Usuários</h3>
+                        <p class="stat-number"><%= stats.users %></p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Jogos</h3>
+                        <p class="stat-number"><%= stats.games %></p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Jogadores Ativos</h3>
+                        <p class="stat-number"><%= stats.activePlayers %></p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="users-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Gerenciar Usuários</h2>
+                </div>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Cadastro</th>
+                                <th>Pontos</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" class="loading-cell">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="games-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Gerenciar Jogos</h2>
+                    <button class="btn-primary" onclick="openGameModal()">+ Novo Jogo</button>
+                </div>
+                <div id="gamesContainer" class="games-grid"></div>
+            </section>
+
+            <section id="levels-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Gerenciar Fases</h2>
+                    <div>
+                        <select id="gameSelect" class="form-select">
+                            <option value="">Selecione um jogo</option>
+                        </select>
+                        <button class="btn-primary" onclick="openLevelModal()">+ Nova Fase</button>
+                    </div>
+                </div>
+                <div id="levelsContainer" class="levels-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeGameModal()">&times;</span>
+            <h2 id="gameModalTitle">Novo Jogo</h2>
+            <form id="gameForm">
+                <input type="hidden" id="gameId">
+                <div class="form-group">
+                    <label for="gameTitle">Título do Jogo</label>
+                    <input type="text" id="gameTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="gameSlug">Slug (URL)</label>
+                    <input type="text" id="gameSlug" required>
+                </div>
+                <div class="form-group">
+                    <label for="gameDescription">Descrição</label>
+                    <textarea id="gameDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="gameType">Tipo de Jogo</label>
+                    <select id="gameType">
+                        <option value="quiz">Quiz</option>
+                        <option value="puzzle">Quebra-cabeça</option>
+                        <option value="memory">Jogo da Memória</option>
+                        <option value="adventure">Aventura</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="gameCover">URL da Capa</label>
+                    <input type="url" id="gameCover" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn-submit">Salvar Jogo</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="levelModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="modal-close" onclick="closeLevelModal()">&times;</span>
+            <h2 id="levelModalTitle">Nova Fase</h2>
+            <form id="levelForm">
+                <input type="hidden" id="levelGameId">
+                <input type="hidden" id="levelId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="levelNumber">Número da Fase</label>
+                        <input type="number" id="levelNumber" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="levelTitle">Título da Fase</label>
+                        <input type="text" id="levelTitle" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="levelDescription">Descrição</label>
+                    <textarea id="levelDescription" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="levelVideo">URL do Vídeo de Apresentação (obrigatório)</label>
+                    <input type="url" id="levelVideo" placeholder="https://youtube.com/..." required>
+                    <small>Vídeo de introdução que será exibido antes da fase</small>
+                </div>
+                <div class="form-group">
+                    <label for="levelThumbnail">URL da Miniatura</label>
+                    <input type="url" id="levelThumbnail" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="levelMinScore">Pontuação Mínima</label>
+                    <input type="number" id="levelMinScore" min="0" value="0">
+                </div>
+                
+                <div class="questions-section">
+                    <h3>Perguntas do Quiz</h3>
+                    <div id="questionsContainer"></div>
+                    <button type="button" class="btn-secondary" onclick="addQuestion()">+ Adicionar Pergunta</button>
+                </div>
+                
+                <button type="submit" class="btn-submit">Salvar Fase</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

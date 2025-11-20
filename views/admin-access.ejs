@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <div class="logo-section">
+                <h1>🔐 Acesso Administrativo</h1>
+                <p>Insira o token de administrador</p>
+            </div>
+
+            <div id="messageArea"></div>
+
+            <form id="adminAccessForm">
+                <div class="form-group">
+                    <label for="adminToken">Token de Acesso</label>
+                    <input type="password" id="adminToken" name="token" placeholder="Token secreto" required>
+                </div>
+                <button type="submit" class="btn-submit" id="btnAccess">Verificar Acesso</button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="/" style="color: var(--cor-primaria); font-weight: 600;">← Voltar ao site</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('adminAccessForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = document.getElementById('adminToken').value;
+            const btn = document.getElementById('btnAccess');
+            const messageArea = document.getElementById('messageArea');
+            
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+            
+            try {
+                const response = await fetch('/admin/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageArea.innerHTML = '<div class="alert alert-success">Acesso concedido! Redirecionando...</div>';
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 1500);
+                } else {
+                    messageArea.innerHTML = `<div class="alert alert-error">${data.message}</div>`;
+                }
+            } catch (error) {
+                messageArea.innerHTML = '<div class="alert alert-error">Erro ao verificar token</div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Verificar Acesso';
+            }
+        });
+    </script>
+</body>
+</html>

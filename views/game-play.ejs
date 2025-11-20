@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/games.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <header>
+        <a href="/"><img src="/img/logo_head.png" alt="Logo Recaatinga" id="logo_recaatinga"></a>
+        <nav>
+            <ul>
+                <li><a href="/#inicio">Início</a></li>
+                <li><a href="/#fauna">Fauna</a></li>
+                <li><a href="/#flora">Flora</a></li>
+                <li><a href="/#preservacao">Preservação</a></li>
+                <li><a href="/#sobre">Sobre</a></li>
+                <li><a href="/games" class="active">Jogos</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+        </nav>
+        <% if (user) { %>
+        <div class="user-info-header">
+            <span>Olá, <strong><%= user.name %></strong></span>
+            <button class="btn-logout-header" onclick="logout()">Sair</button>
+        </div>
+        <% } %>
+    </header>
+
+    <main class="game-container">
+        <div class="game-header">
+            <h1><%= game.title %></h1>
+            <p><%= game.description || 'Explore e aprenda sobre a Caatinga' %></p>
+        </div>
+
+        <% if (progress) { %>
+        <div class="game-progress">
+            <h3>Seu Progresso</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: <%= (progress.completedLevels.length / game.levels.length) * 100 %>%"></div>
+            </div>
+            <p><%= progress.completedLevels.length %> de <%= game.levels.length %> fases completadas | Pontuação Total: <%= progress.totalScore %></p>
+        </div>
+        <% } %>
+
+        <!-- Seção de Seleção de Fases -->
+        <div id="levelsSection" class="levels-grid">
+            <% game.levels.forEach((level, index) => { 
+                const isCompleted = progress && progress.completedLevels.some(l => l.levelId.toString() === level._id.toString());
+                const isLocked = index > 0 && (!progress || progress.completedLevels.length < index);
+            %>
+                <div class="level-card-game <%= isCompleted ? 'completed' : '' %> <%= isLocked ? 'locked' : '' %>" 
+                     onclick="<%= !isLocked ? `startLevel('${game._id}', '${level._id}', '${level.videoUrl}')` : '' %>">
+                    <div class="level-thumbnail" style="background-image: url('<%= level.thumbnail || '/img/default-level.jpg' %>')">
+                        <div class="level-overlay">
+                            <span class="level-label">Fase <%= level.levelNumber %></span>
+                        </div>
+                    </div>
+                    <div class="level-content">
+                        <h3><%= level.title %></h3>
+                        <p><%= level.description || 'Complete esta fase' %></p>
+                        <% if (isCompleted) { %>
+                            <p style="color: var(--cor-sucesso); font-weight: 600;">✓ Completa</p>
+                        <% } else if (isLocked) { %>
+                            <p style="color: var(--cor-erro);">🔒 Complete a fase anterior</p>
+                        <% } else { %>
+                            <button class="btn-play">Jogar Agora</button>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <!-- Seção de Vídeo -->
+        <div id="videoSection" class="video-section" style="display: none;">
+            <h2>Assista ao vídeo de apresentação</h2>
+            <div class="video-container">
+                <iframe id="videoPlayer" allowfullscreen></iframe>
+            </div>
+            <div class="quiz-actions">
+                <button class="btn-secondary" onclick="skipVideo()">Pular Vídeo</button>
+            </div>
+        </div>
+
+        <!-- Seção do Quiz -->
+        <div id="quizSection" class="quiz-section" style="display: none;">
+            <div class="quiz-header">
+                <h2 id="quizTitle"></h2>
+                <div class="quiz-score">
+                    Pontuação: <strong id="currentScore">0</strong>
+                </div>
+            </div>
+            <div id="quizContent" class="quiz-content"></div>
+            <div class="quiz-actions">
+                <button class="btn-secondary" onclick="cancelQuiz()">Cancelar</button>
+                <button class="btn-primary" id="btnNextQuestion" style="display: none;" onclick="nextQuestion()">Próxima Pergunta</button>
+            </div>
+        </div>
+
+        <!-- Seção de Resultado -->
+        <div id="resultSection" class="result-section" style="display: none;">
+            <h2>Fase Concluída!</h2>
+            <div class="result-stats">
+                <p>Sua pontuação final:</p>
+                <p><strong id="finalScore">0</strong> pontos</p>
+                <div id="resultMessage"></div>
+            </div>
+            <div class="quiz-actions">
+                <button class="btn-secondary" onclick="backToLevels()">Voltar às Fases</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <h4>Contato</h4>
+        <ul>
+            <li>
+                <img id="icons_footer" src="/img/instagram-32.png" alt="Instagram">
+                <a href="https://www.instagram.com/vivaacaatinga.pibicjr/" target="_blank">@vivaacaatinga.pibicjr</a>
+            </li>
+            <li>
+                <img id="icons_footer" src="/img/whatsapp-50.png" alt="WhatsApp">
+                <span>(82) 9 xxxx-xxxx</span>
+            </li>
+        </ul>
+        <p class="copyright">&copy; 2024 Recaatinga - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        const gameData = <%- JSON.stringify(game) %>;
+        const progressData = <%- JSON.stringify(progress || null) %>;
+    </script>
+    <script src="/js/app.js"></script>
+    <script src="/js/game-play.js"></script>
+</body>
+</html>

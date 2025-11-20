@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <header>
+        <a href="/"><img src="/img/logo_head.png" alt="Logo Recaatinga" id="logo_recaatinga"></a>
+        <nav>
+            <ul>
+                <li><a href="/#inicio">Início</a></li>
+                <li><a href="/#fauna">Fauna</a></li>
+                <li><a href="/#flora">Flora</a></li>
+                <li><a href="/#preservacao">Preservação</a></li>
+                <li><a href="/#sobre">Sobre</a></li>
+                <li><a href="/games">Jogos</a></li>
+                <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+            </ul>
+        </nav>
+        <% if (user) { %>
+        <div class="user-info-header">
+            <span>Olá, <strong><%= user.name %></strong></span>
+            <button class="btn-logout-header" onclick="logout()">Sair</button>
+        </div>
+        <% } %>
+    </header>
+
+    <main style="min-height: 80vh; padding: 4rem 2rem;">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1 style="color: var(--cor-primaria); font-size: 2.5rem; margin-bottom: 1rem;">
+                    Dashboard do Usuário
+                </h1>
+                <% if (user.role === 'admin') { %>
+                <div style="margin-top: 1.5rem;">
+                    <a href="/admin" style="display: inline-block; padding: 1rem 2rem; background: linear-gradient(135deg, #1565c0, #1976d2); color: white; border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(21,101,192,0.3);">
+                        🛡️ Painel Administrativo
+                    </a>
+                </div>
+                <% } %>
+            </div>
+
+            <div style="background: white; padding: 3rem; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                <h2 style="color: var(--cor-secundaria); margin-bottom: 2rem; text-align: center;">
+                    Bem-vindo(a), <%= user.name %>!
+                </h2>
+
+                <div style="margin: 2rem 0; text-align: left; padding: 1.5rem; background: var(--cor-fundo); border-radius: 15px;">
+                    <div style="display: grid; gap: 1rem;">
+                        <p style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #ddd;">
+                            <strong>E-mail:</strong> <span><%= user.email %></span>
+                        </p>
+                        <p style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #ddd;">
+                            <strong>Cadastro:</strong> <span><%= new Date(user.createdAt).toLocaleDateString('pt-BR') %></span>
+                        </p>
+                        <% if (user.lastLogin) { %>
+                        <p style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #ddd;">
+                            <strong>Último acesso:</strong> <span><%= new Date(user.lastLogin).toLocaleDateString('pt-BR') %> às <%= new Date(user.lastLogin).toLocaleTimeString('pt-BR') %></span>
+                        </p>
+                        <% } %>
+                        <p style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                            <strong>Tipo de conta:</strong> 
+                            <span style="padding: 0.3rem 1rem; background: <%= user.role === 'admin' ? 'linear-gradient(135deg, #1565c0, #1976d2)' : 'linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria))' %>; color: white; border-radius: 20px; font-size: 0.9rem; font-weight: 600;">
+                                <%= user.role === 'admin' ? '🛡️ Administrador' : '👤 Usuário' %>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 3rem;">
+                    <h3 style="color: var(--cor-primaria); margin-bottom: 1.5rem; text-align: center;">Suas Estatísticas</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, #f3f4f6, #e5e7eb); padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎮</div>
+                            <h4 style="color: var(--cor-secundaria); margin-bottom: 0.5rem;">Jogos</h4>
+                            <p style="font-size: 2rem; font-weight: bold; color: var(--cor-primaria); margin: 0;"><%= progress?.length || 0 %></p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">⭐</div>
+                            <h4 style="color: var(--cor-secundaria); margin-bottom: 0.5rem;">Pontos</h4>
+                            <p style="font-size: 2rem; font-weight: bold; color: var(--cor-primaria); margin: 0;"><%= user.totalPoints || 0 %></p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+                            <h4 style="color: var(--cor-secundaria); margin-bottom: 0.5rem;">Conquistas</h4>
+                            <p style="font-size: 2rem; font-weight: bold; color: var(--cor-primaria); margin: 0;"><%= user.achievements?.length || 0 %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <% if (!user.role || user.role === 'user') { %>
+                <div style="margin-top: 3rem; padding: 2rem; background: linear-gradient(135deg, rgba(21,101,192,0.1), rgba(25,118,210,0.1)); border-radius: 15px; text-align: center; border: 2px solid rgba(21,101,192,0.2);">
+                    <h4 style="color: #1565c0; margin-bottom: 1rem;">💼 Quer se tornar administrador?</h4>
+                    <p style="margin-bottom: 1.5rem; color: var(--cor-texto);">Se você possui um token de acesso administrativo, clique no botão abaixo</p>
+                    <a href="/admin/access" style="display: inline-block; padding: 0.8rem 2rem; background: #1565c0; color: white; border-radius: 50px; text-decoration: none; font-weight: 600; transition: all 0.3s;">
+                        Solicitar Acesso Admin
+                    </a>
+                </div>
+                <% } %>
+
+                <div style="margin-top: 3rem; text-align: center; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/games" style="display: inline-block; padding: 1rem 2.5rem; background: linear-gradient(135deg, var(--cor-primaria) 0%, var(--cor-secundaria) 100%); color: white; border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s; box-shadow: 0 4px 15px rgba(45,80,22,0.3);">
+                        🎮 Jogar Agora
+                    </a>
+                    <a href="/" style="display: inline-block; padding: 1rem 2.5rem; background: white; color: var(--cor-primaria); border: 2px solid var(--cor-primaria); border-radius: 50px; text-decoration: none; font-weight: bold; transition: all 0.3s;">
+                        🏠 Voltar ao Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <h4>Contato</h4>
+        <ul>
+            <li>
+                <img id="icons_footer" src="/img/instagram-32.png" alt="Instagram">
+                <a href="https://www.instagram.com/vivaacaatinga.pibicjr/" target="_blank">@vivaacaatinga.pibicjr</a>
+            </li>
+            <li>
+                <img id="icons_footer" src="/img/whatsapp-50.png" alt="WhatsApp">
+                <span>(82) 9 xxxx-xxxx</span>
+            </li>
+        </ul>
+        <p class="copyright">&copy; 2024 Recaatinga - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

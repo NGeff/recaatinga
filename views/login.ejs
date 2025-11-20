@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title || 'ReCaatinga' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" href="/img/logo_head.png" />
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <div class="logo-section">
+                <h1>🌿 ReCaatinga</h1>
+                <p>Preservando a Caatinga juntos</p>
+            </div>
+
+            <% if (success && success.length > 0) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+            <% if (error && error.length > 0) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">Entrar</div>
+                <div class="tab" onclick="switchTab('register')">Cadastrar</div>
+            </div>
+
+            <div class="form-content active" id="loginForm">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">E-mail</label>
+                        <input type="email" id="loginEmail" name="email" placeholder="seu@email.com" required autocomplete="email">
+                        <span class="error-message" id="loginEmailError">E-mail inválido</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha</label>
+                        <div class="password-toggle">
+                            <input type="password" id="loginPassword" name="password" placeholder="Sua senha" required autocomplete="current-password">
+                            <span class="toggle-icon" onclick="togglePassword('loginPassword')">👁️</span>
+                        </div>
+                        <span class="error-message" id="loginPasswordError">Senha incorreta</span>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnLogin">Entrar</button>
+                </form>
+            </div>
+
+            <div class="form-content" id="registerForm">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerName">Nome Completo</label>
+                        <input type="text" id="registerName" name="name" placeholder="Seu nome completo" required autocomplete="name">
+                        <span class="error-message" id="registerNameError">Nome é obrigatório</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">E-mail</label>
+                        <input type="email" id="registerEmail" name="email" placeholder="seu@email.com" required autocomplete="email">
+                        <span class="error-message" id="registerEmailError">E-mail inválido</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Senha</label>
+                        <div class="password-toggle">
+                            <input type="password" id="registerPassword" name="password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+                            <span class="toggle-icon" onclick="togglePassword('registerPassword')">👁️</span>
+                        </div>
+                        <span class="error-message" id="registerPasswordError">Senha deve ter no mínimo 6 caracteres</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPasswordConfirm">Confirmar Senha</label>
+                        <div class="password-toggle">
+                            <input type="password" id="registerPasswordConfirm" name="passwordConfirm" placeholder="Repita sua senha" required autocomplete="new-password">
+                            <span class="toggle-icon" onclick="togglePassword('registerPasswordConfirm')">👁️</span>
+                        </div>
+                        <span class="error-message" id="registerPasswordConfirmError">As senhas não coincidem</span>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnRegister">Cadastrar</button>
+                </form>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="/" style="color: var(--cor-primaria); font-weight: 600;">← Voltar ao site</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

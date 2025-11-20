@@ -1,0 +1,461 @@
+.games-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.game-showcase-card {
+    background: var(--cor-branco);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--sombra-padrao);
+    transition: var(--transicao-padrao);
+    animation: fadeInUp 0.6s ease;
+}
+
+.game-showcase-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--sombra-hover);
+}
+
+.game-showcase-img {
+    width: 100%;
+    height: 220px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--cor-primaria);
+    position: relative;
+}
+
+.game-showcase-img::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+}
+
+.game-showcase-content {
+    padding: 2rem;
+}
+
+.game-type-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria));
+    color: var(--cor-branco);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.game-showcase-content h3 {
+    font-size: 1.6rem;
+    color: var(--cor-primaria);
+    margin-bottom: 1rem;
+}
+
+.game-showcase-content p {
+    color: var(--cor-texto);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.game-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--cor-fundo);
+    flex-wrap: wrap;
+}
+
+.game-stats span {
+    color: var(--cor-secundaria);
+    font-weight: 600;
+}
+
+.btn-play {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria));
+    color: var(--cor-branco);
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicao-padrao);
+    text-decoration: none;
+    text-align: center;
+    width: 100%;
+}
+
+.btn-play:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 80, 22, 0.4);
+}
+
+.btn-play:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    min-height: 80vh;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.game-header h1 {
+    font-size: 3rem;
+    color: var(--cor-primaria);
+    margin-bottom: 1rem;
+}
+
+.game-progress {
+    background: var(--cor-branco);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    box-shadow: var(--sombra-padrao);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--cor-fundo);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cor-primaria), var(--cor-destaque));
+    transition: width 0.5s ease;
+}
+
+.levels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.level-card-game {
+    background: var(--cor-branco);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--sombra-padrao);
+    transition: var(--transicao-padrao);
+    position: relative;
+}
+
+.level-card-game.locked {
+    opacity: 0.6;
+}
+
+.level-card-game.locked::after {
+    content: '🔒';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    z-index: 2;
+}
+
+.level-card-game.completed::before {
+    content: '✓';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background: var(--cor-sucesso);
+    color: var(--cor-branco);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.level-card-game:hover:not(.locked) {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-hover);
+}
+
+.level-thumbnail {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--cor-primaria);
+    position: relative;
+}
+
+.level-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.level-label {
+    color: var(--cor-branco);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.level-content {
+    padding: 1.5rem;
+}
+
+.level-content h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 0.5rem;
+}
+
+.level-content p {
+    color: var(--cor-texto);
+    margin-bottom: 1rem;
+}
+
+.video-section {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: var(--sombra-padrao);
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.video-section h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    margin-bottom: 1.5rem;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.quiz-section {
+    background: var(--cor-branco);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: var(--sombra-padrao);
+    animation: fadeInUp 0.6s ease;
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--cor-fundo);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.quiz-header h2 {
+    color: var(--cor-primaria);
+}
+
+.quiz-score {
+    font-size: 1.2rem;
+    color: var(--cor-secundaria);
+}
+
+.quiz-content {
+    min-height: 300px;
+    margin-bottom: 2rem;
+}
+
+.question-card {
+    animation: fadeInUp 0.4s ease;
+}
+
+.question-text {
+    font-size: 1.3rem;
+    color: var(--cor-primaria);
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.options-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.option-btn {
+    padding: 1.2rem;
+    background: var(--cor-fundo);
+    border: 3px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transicao-padrao);
+    text-align: left;
+    font-size: 1.1rem;
+    color: var(--cor-texto);
+}
+
+.option-btn:hover:not(:disabled) {
+    background: var(--cor-branco);
+    border-color: var(--cor-primaria);
+    transform: translateX(5px);
+}
+
+.option-btn.selected {
+    background: var(--cor-primaria);
+    color: var(--cor-branco);
+    border-color: var(--cor-primaria);
+}
+
+.option-btn.correct {
+    background: var(--cor-sucesso);
+    color: var(--cor-branco);
+    border-color: var(--cor-sucesso);
+}
+
+.option-btn.wrong {
+    background: var(--cor-erro);
+    color: var(--cor-branco);
+    border-color: var(--cor-erro);
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.result-section {
+    background: var(--cor-branco);
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: var(--sombra-padrao);
+    text-align: center;
+    animation: fadeInUp 0.6s ease;
+}
+
+.result-section h2 {
+    font-size: 2.5rem;
+    color: var(--cor-sucesso);
+    margin-bottom: 2rem;
+}
+
+.result-stats {
+    margin: 2rem 0;
+}
+
+.result-stats p {
+    font-size: 1.3rem;
+    color: var(--cor-texto);
+    margin-bottom: 1rem;
+}
+
+.result-stats strong {
+    font-size: 2rem;
+    color: var(--cor-primaria);
+}
+
+@media screen and (max-width: 1024px) {
+    .games-showcase {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .games-showcase {
+        grid-template-columns: 1fr;
+    }
+
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .game-container {
+        padding: 2rem 1rem;
+    }
+
+    .levels-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quiz-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .question-text {
+        font-size: 1.1rem;
+    }
+    
+    .option-btn {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .result-section {
+        padding: 2rem 1rem;
+    }
+    
+    .result-section h2 {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .game-showcase-content {
+        padding: 1.5rem;
+    }
+    
+    .game-showcase-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .quiz-actions {
+        flex-direction: column;
+    }
+    
+    .quiz-actions button {
+        width: 100%;
+    }
+}
